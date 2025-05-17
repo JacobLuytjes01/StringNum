@@ -1,5 +1,5 @@
 //
-// Created by Jacob Luytjes on 3/17/2025.
+// Created by jacob on 3/17/2025.
 //
 
 #include "StringNum.h"
@@ -34,6 +34,7 @@ StringNum::StringNum(const std::string& num): decimal(-1) {
     if (number[0] == '-') {
         ++i;
         negative = true;
+        number[0] = '0';
     }
     while (i < number.length() && decimal == -1) {
         if (number[i] == '.') {
@@ -53,6 +54,8 @@ StringNum::StringNum(const std::string& num): decimal(-1) {
         decimal = number.length();
         number += ".0";
     }
+    trimBack();
+    trimFront();
 }
 StringNum& StringNum::operator=(const StringNum& num) {
     number = num.number;
@@ -71,22 +74,31 @@ StringNum StringNum::operator+ (const StringNum& num) const& {
         if (this->number.length() - this->decimal >= num.number.length() - num.decimal) {
             StringNum temp = num;
             temp.number.append(std::string(this->number.length() - this->decimal - (num.number.length() - num.decimal), '0'));
-            if (num.number.length() <= this->number.length()) {
+            if (num.decimal <= this->decimal) {
                 return this->add(temp);
             }
             return temp.add(*this);
         }
         StringNum temp = *this;
         temp.number.append(std::string( num.number.length() - num.decimal - (this->number.length() - this->decimal), '0'));
-        if (num.number.length() <= this->number.length()) {
+        if (num.decimal <= this->decimal) {
             return temp.add(num);
         }
         return num.add(temp);
     }
     else {
-        // todo: negative section
-        std::cout << "fail" << std::endl;
-        return StringNum();
+        if (num.negative) {
+            StringNum temp = num;
+            temp.negative = false;
+            return *this - temp;
+        }
+        else {
+            StringNum temp = *this;
+            temp.negative = false;
+            temp = temp - num;
+            temp.negative = !temp.negative;
+            return temp;
+        }
     }
 }
 
@@ -128,35 +140,51 @@ StringNum StringNum::add(const StringNum& num) const&{
 }
 
 StringNum StringNum::operator- (const StringNum& num) const& {
-    if (this->number.length() - this->decimal == num.number.length() - num.decimal) {
-        if (num.number.length() <= this->number.length()) {
-            if (this->number < num.number) {
-                StringNum temp = num.sub(*this);
-                temp.negative = true;
-                return temp;
+    if (this->negative == num.negative) {
+        if (this->number.length() - this->decimal == num.number.length() - num.decimal) {
+            if (num.number.length() <= this->number.length()) {
+                if (this->number < num.number) {
+                    StringNum temp = num.sub(*this);
+                    temp.negative = true;
+                    return temp;
+                }
+                return this->sub(num);
             }
-            return this->sub(num);
+            return num.sub(*this);
         }
-        return num.sub(*this);
-    }
-    else if (this->number.length() - this->decimal >= num.number.length() - num.decimal) {
-        StringNum temp = num;
-        temp.number.append(std::string(this->number.length() - this->decimal - (num.number.length() - num.decimal), '0'));
-        if (num.number.length() <= this->number.length()) {
-            return this->sub(temp);
+        else if (this->number.length() - this->decimal >= num.number.length() - num.decimal) {
+            StringNum temp = num;
+            temp.number.append(std::string(this->number.length() - this->decimal - (num.number.length() - num.decimal), '0'));
+            if (num.decimal <= this->decimal) {
+                return this->sub(temp);
+            }
+            return temp.sub(*this);
         }
-        return temp.sub(*this);
+        else {
+            StringNum temp = *this;
+            temp.number.append(std::string( num.number.length() - num.decimal - (this->number.length() - this->decimal), '0'));
+            if (num.decimal <= this->decimal) {
+                return temp.sub(num);
+            }
+            return num.sub(temp);
+        }
     }
     else {
-        StringNum temp = *this;
-        temp.number.append(std::string( num.number.length() - num.decimal - (this->number.length() - this->decimal), '0'));
-        if (num.number.length() <= this->number.length()) {
-            return temp.sub(num);
+        if (num.negative) {
+            StringNum temp = num;
+            temp.negative = false;
+            return *this + temp;
         }
-        return num.sub(temp);
+        else {
+            StringNum temp = num;
+            temp.negative = true;
+            return temp + *this;
+        }
     }
 }
+
 StringNum StringNum::sub(const StringNum& num) const&{
+    //std::cout << "[ " << this->number << " | " << num.number << " ]"  << std::endl;
     StringNum result(*this);
     const unsigned int numLength = result.number.length();
     const int numOffset = (result.decimal) - (num.decimal);
@@ -192,6 +220,61 @@ StringNum StringNum::sub(const StringNum& num) const&{
     result.trimBack();
     result.trimFront();
     return result;
+}
+
+StringNum StringNum::operator* (const StringNum& num) const& {
+    if (this->negative == num.negative) {
+        return this->mult(num);
+    }
+    else {
+        StringNum result = *this;
+        result = result.mult(num);
+        result.negative = true;
+        return result;
+    }
+}
+
+StringNum StringNum::mult(const StringNum& num) const&{
+    std::string resultString;
+    const unsigned int numLength = this->number.length();
+    const unsigned int numLength2 = num.number.length();
+    resultString.append(numLength2 - 2 + numLength, '0');
+
+    int numPos = resultString.length();
+    int temp = 0;
+    for (int i = numLength-1; i >= 0; --i) {
+        if (this->number[i] == '0') {
+            ++temp;
+        }
+        else if (this->number[i] == '.') {
+
+        }
+        else {
+            int temp2 = 1;
+            for (int j = numLength2-1; j >= 0; --j) {
+                if (num.number[j] == '0') {
+                    ++temp2;
+                }
+                else if (num.number[j] == '.') {
+
+                }
+                else {
+                    resultString[numPos - (temp + temp2)] += ((this->number[i] - '0') * (num.number[j] - '0'));
+
+                    while (resultString[numPos - (temp + temp2)] > '9' || resultString[numPos - (temp + temp2)] < '0') {
+                        resultString[numPos - (temp + temp2)] -= 10;
+                        resultString[numPos - (temp + temp2) - 1]++;
+                    }
+                    ++temp2;
+                }
+            }
+            ++temp;
+        }
+    }
+    std::string numBase = resultString.substr(0, (this->decimal + num.decimal));
+    numBase.push_back('.');
+    numBase += resultString.substr(numBase.length() - 1);
+    return StringNum(numBase);
 }
 
 std::string StringNum::getNumber() const {
