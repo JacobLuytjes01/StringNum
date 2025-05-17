@@ -1,5 +1,5 @@
 //
-// Created by Jacob Luytjes on 3/17/2025.
+// Created by jacob on 3/17/2025.
 //
 
 #ifndef STRINGNUM_H
@@ -14,6 +14,7 @@ private:
 
     StringNum add(const StringNum& num)const&;
     StringNum sub(const StringNum& num)const&;
+    StringNum mult(const StringNum& num)const&;
     void trimBack();
     void trimFront();
 
@@ -26,6 +27,7 @@ public:
     StringNum& operator=(const StringNum& num);
     StringNum operator+ (const StringNum& num) const&;
     StringNum operator- (const StringNum& num) const&;
+    StringNum operator* (const StringNum& num) const&;
 
     bool operator==(const StringNum& num)const&;
     bool operator!=(const StringNum& num)const&;
