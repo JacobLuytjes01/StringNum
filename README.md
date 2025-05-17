@@ -8,13 +8,11 @@ Addition
 
 Subtraction
 
-All relational operators (will return bool)
+All relational operators (return bool)
+
+Multiplication
 
 
 What will be added:
 
-Fully working negative numbers
-
 Subtraction into negative numbers when the numbers have different sizes.
-
-Maybe multiplication
