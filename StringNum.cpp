@@ -3,7 +3,6 @@
 //
 
 #include "StringNum.h"
-#include <iostream>
 
 StringNum::StringNum() {
     number = "0.0";
@@ -177,7 +176,6 @@ StringNum StringNum::operator- (const StringNum& num) const& {
 }
 
 StringNum StringNum::sub(const StringNum& num) const&{
-    //std::cout << "[ " << this->number << " | " << num.number << " ]"  << std::endl;
     StringNum result(*this);
     const unsigned int numLength = result.number.length();
     const int numOffset = (result.decimal) - (num.decimal);
