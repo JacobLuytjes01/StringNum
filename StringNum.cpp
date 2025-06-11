@@ -60,6 +60,7 @@ StringNum::StringNum(const std::string& num): decimal(-1) {
 StringNum& StringNum::operator=(const StringNum& num) {
     number = num.number;
     decimal = num.decimal;
+    negative = num.negative;
     return *this;
 }
 StringNum StringNum::operator+ (const StringNum& num) const& {
@@ -134,52 +135,44 @@ StringNum StringNum::add(const StringNum& num) const&{
     if (result.number[0] > '9') {
         result.number[0] = result.number[0] - 10;
         result.number = "1" + result.number;
+        ++result.decimal;
     }
     result.trimBack();
     return result;
 }
 
+StringNum StringNum::subsub(const StringNum& num) const& {
+    if (num.decimal < this->decimal) {
+        return this->sub(num);
+    }
+    else if (num.decimal == this->decimal && this->number > num.number) {
+        return this->sub(num);
+    }
+    StringNum temp = num.sub(*this);
+    temp.negative = true;
+    return temp;
+}
+
 StringNum StringNum::operator- (const StringNum& num) const& {
     if (this->negative == num.negative) {
         if (this->number.length() - this->decimal == num.number.length() - num.decimal) {
-            if (num.number.length() <= this->number.length()) {
-                if (this->number < num.number) {
-                    StringNum temp = num.sub(*this);
-                    temp.negative = true;
-                    return temp;
-                }
-                return this->sub(num);
-            }
-            return num.sub(*this);
+            return this->subsub(num);
         }
         else if (this->number.length() - this->decimal >= num.number.length() - num.decimal) {
             StringNum temp = num;
             temp.number.append(std::string(this->number.length() - this->decimal - (num.number.length() - num.decimal), '0'));
-            if (num.decimal <= this->decimal) {
-                return this->sub(temp);
-            }
-            return temp.sub(*this);
+            return this->subsub(temp);
         }
         else {
             StringNum temp = *this;
             temp.number.append(std::string( num.number.length() - num.decimal - (this->number.length() - this->decimal), '0'));
-            if (num.decimal <= this->decimal) {
-                return temp.sub(num);
-            }
-            return num.sub(temp);
+            return temp.subsub(num);
         }
     }
     else {
-        if (num.negative) {
-            StringNum temp = num;
-            temp.negative = false;
-            return *this + temp;
-        }
-        else {
-            StringNum temp = num;
-            temp.negative = true;
-            return temp + *this;
-        }
+        StringNum temp = num;
+        temp.negative = !num.negative;
+        return *this + temp;
     }
 }
 
@@ -205,17 +198,11 @@ StringNum StringNum::sub(const StringNum& num) const&{
                 }
             }
         }
-        else {
-            if (i != 0 && result.number[i] < '0') {
-                result.number[i] = result.number[i] + 10;
-                result.number[i-1]++;
-            }
-            else {break;}
+        else if (i != 0 && result.number[i] < '0') {
+            result.number[i] = result.number[i] + 10;
+            result.number[i-1]--;
         }
-    }
-    if (result.number[0] > '9') {
-        result.number[0] = result.number[0] - 10;
-        result.number = "1" + result.number;
+        else {break;}
     }
     result.trimBack();
     result.trimFront();
