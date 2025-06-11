@@ -14,6 +14,7 @@ private:
 
     StringNum add(const StringNum& num)const&;
     StringNum sub(const StringNum& num)const&;
+    StringNum subsub(const StringNum& num) const&;
     StringNum mult(const StringNum& num)const&;
     void trimBack();
     void trimFront();
@@ -36,6 +37,6 @@ public:
     bool operator>(const StringNum& num)const&;
     bool operator<(const StringNum& num)const&;
 
-    std::string getNumber() const ;
+    std::string getNumber() const;
 };
 #endif //STRINGNUM_H
