@@ -1,18 +1,17 @@
 This code was made for people who want numbers of near-infinite precision without some of the flaws of floating point.
-This code works for positive numbers, and the negative numbers code will work whenever I feel like it.
-
 
 What currently exists:
 
-Addition
+- Addition
 
-Subtraction
+- Subtraction
 
-All relational operators (return bool)
+- Multiplication
 
-Multiplication
+- All relational operators (return bool)
 
+What could be added:
 
-What will be added:
+- Division (maybe), 
 
-Subtraction into negative numbers when the numbers have different sizes.
+- Anything anyone else wants will be considered.
