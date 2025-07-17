@@ -115,10 +115,10 @@ StringNum StringNum::add(const StringNum& num) const&{
                 if (result.number[i] > '9' && i != 0) {
                     result.number[i] = result.number[i] - 10;
                     if (i-1 == result.decimal) {
-                        result.number[i-2]++;
+                        ++result.number[i-2];
                     }
                     else {
-                        result.number[i-1]++;
+                        ++result.number[i-1];
                     }
                 }
             }
@@ -126,7 +126,7 @@ StringNum StringNum::add(const StringNum& num) const&{
         else {
             if (i != 0 && result.number[i] > '9') {
                 result.number[i] = result.number[i] - 10;
-                result.number[i-1]++;
+                ++result.number[i-1];
             }
             else {break;}
         }
@@ -248,7 +248,7 @@ StringNum StringNum::mult(const StringNum& num) const&{
 
                     while (resultString[numPos - (temp + temp2)] > '9' || resultString[numPos - (temp + temp2)] < '0') {
                         resultString[numPos - (temp + temp2)] -= 10;
-                        resultString[numPos - (temp + temp2) - 1]++;
+                        ++resultString[numPos - (temp + temp2) - 1];
                     }
                     ++temp2;
                 }
@@ -368,4 +368,13 @@ bool StringNum::operator>(const StringNum& num) const& {
         return true;
     }
     return false;
+}
+StringNum& StringNum::operator++(){
+    *this = *this + 1;
+    return *this;
+}
+StringNum StringNum::operator++(int){
+    StringNum temp = *this;
+    *this = *this + 1;
+    return temp;
 }
