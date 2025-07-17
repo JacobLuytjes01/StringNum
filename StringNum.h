@@ -26,9 +26,9 @@ public:
     StringNum(const std::string& num);
 
     StringNum& operator=(const StringNum& num);
-    StringNum operator+ (const StringNum& num) const&;
-    StringNum operator- (const StringNum& num) const&;
-    StringNum operator* (const StringNum& num) const&;
+    StringNum operator+ (const StringNum& num)const&;
+    StringNum operator- (const StringNum& num)const&;
+    StringNum operator* (const StringNum& num)const&;
 
     bool operator==(const StringNum& num)const&;
     bool operator!=(const StringNum& num)const&;
@@ -39,7 +39,11 @@ public:
 
     StringNum& operator++();
     StringNum operator++(int);
+    StringNum& operator--();
+    StringNum operator--(int);
 
-    std::string getNumber() const;
+    std::string getNumber()const&;
+    unsigned long long getLength()const&;
+    bool hasDecimal()const&;
 };
 #endif //STRINGNUM_H
