@@ -20,6 +20,13 @@ int main() {
     StringNum str6("555.77");
     StringNum str7("-555.77");
 
+    /*
+    cout << ++str1 << endl; // 34.0
+    cout << str1++ << endl; // 34.0
+    cout << str1 << endl; // 35.0
+    */
+
+    /*
     cout << str1D * str1D << endl; // 2494.0036
     cout << str2 + str2 << endl; // 58.246246
     cout << str3 * str3 << endl; // 999998.000001
@@ -101,7 +108,7 @@ int main() {
         if (a2 != x) {
             cout << a2 << " : " << x << endl;
         }
-    }*/
+    }
 
     StringNum a2 = 80;
     long x = 80;
@@ -112,6 +119,6 @@ int main() {
             cout << a2 << " : " << x << endl;
         }
     }
-
+    */
     return 0;
 }
