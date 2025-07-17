@@ -37,6 +37,9 @@ public:
     bool operator>(const StringNum& num)const&;
     bool operator<(const StringNum& num)const&;
 
+    StringNum& operator++();
+    StringNum operator++(int);
+
     std::string getNumber() const;
 };
 #endif //STRINGNUM_H
