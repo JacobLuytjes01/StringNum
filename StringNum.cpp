@@ -11,12 +11,12 @@ StringNum::StringNum() {
 }
 StringNum::StringNum(const int& num) {
     std::string temp = std::to_string(num);
-    if (temp.at(0) == '-') {
+    if (temp[0] == '-') {
         negative = true;
         number = temp.substr(1, temp.length() - 1);
     }
     else {
-        number = std::to_string(num);
+        number = temp;
     }
     decimal = number.length();
     number += ".0";
@@ -306,6 +306,9 @@ bool StringNum::operator==(const StringNum& num) const& {
             return true;
         }
     }
+    else if (this->number == "0.0" && num.number == "0.0") {
+        return true;
+    }
     return false;
 }
 bool StringNum::operator!=(const StringNum& num) const& {
@@ -313,6 +316,9 @@ bool StringNum::operator!=(const StringNum& num) const& {
 }
 bool StringNum::operator>=(const StringNum& num) const& {
     if (this == &num) {
+        return true;
+    }
+    else if (*this == num) {
         return true;
     }
     else if (this->negative == num.negative) {
@@ -345,6 +351,9 @@ bool StringNum::operator<(const StringNum& num) const& {
 }
 bool StringNum::operator>(const StringNum& num) const& {
     if (this == &num) {
+        return false;
+    }
+    else if (*this == num) {
         return false;
     }
     else if (this->negative == num.negative) {
